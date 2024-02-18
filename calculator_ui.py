@@ -5,6 +5,8 @@ from keypad import Keypad
 from expression_handler import ExpressionHandler
 from evaluate import Evaluator
 from operants import Operants
+from history_handler import History
+import copy
 
 op = Operants()
 
@@ -13,6 +15,7 @@ class Calculator_UI(tk.Tk):
         super().__init__()
         self.title("Calculator!")
         self.expression = ExpressionHandler()
+        self.history = History()
         
     def make_keypad(self, keyname:list = op.numbers, columns:int = 3):
         return Keypad(self, keyname, columns)
@@ -26,12 +29,59 @@ class Calculator_UI(tk.Tk):
         return number_view
     
     def make_combobox(self):
-        combobox = ttk.Combobox(self)
+        combobox = ttk.Combobox(self, state="readonly")
         combobox["values"] = op.special
         return combobox
+    
+    def make_menubar(self):
+        menubar = tk.Menu(self)
+        self.config(menu=menubar)
+        menubar.add_cascade(
+            label="History",
+            command=self.create_new_windows
+        )     
+        
+    def create_new_windows(self, *args):
+        # Create secondary (or popup) window.
+        secondary_window = tk.Toplevel()
+        secondary_window.title("Secondary Window")
+        secondary_window.config(width=300, height=200)
+        
+        self.new_window_canvas, self.new_window_frame = self.make_new_chooser_bars(secondary_window)
+    
+        # Create a button to close (destroy) this window.
+        
+        
+    def make_new_chooser_bars(self, new_window):
+        def myfunction(event):
+            canvas.configure(scrollregion=canvas.bbox("all"),width=200,height=200)
+        canvas=tk.Canvas(new_window)
+        frame=tk.Frame(canvas)
+        frame.pack(expand=True, fill="x")
+        myscrollbar=tk.Scrollbar(new_window,orient="vertical",command=canvas.yview)
+        canvas.configure(yscrollcommand=myscrollbar.set)
+
+        myscrollbar.pack(side="right",fill="y")
+        canvas.pack(side="left", fill="x", expand=True)
+        canvas.create_window((0,0),window=frame,anchor='nw')
+        frame.bind("<Configure>",myfunction)
+        print(self.history.history)
+        for i in self.history.history:
+            print(i.display())
+            button = tk.Button(frame, text=f"{i.display()} = {Evaluator().evaluate(i).display()}")
+            button.pack(expand=True, side="top", fill="x")
+        return canvas, frame
+    
+    def choose_history(self):
+        pass
+    
+    def history_button_handler(self, event, *args):
+        self.expression = event["text"]
+        self.write_text(self.expression)
         
     def init_components(self):
         options = {'font': ('Consolas', 14)}
+        self.menu = self.make_menubar()
         self.number_view = self.make_textfield()
         self.combobox = self.make_combobox()
         self.buttomframe = tk.Frame(self)
@@ -45,23 +95,38 @@ class Calculator_UI(tk.Tk):
         self.operation_frame.pack(expand=True, fill=tk.BOTH, side="right", in_=self.buttomframe)
         self.keypad_frame.bind(self.bind_keyframe)
         self.operation_frame.bind(self.bind_keyframe)
+        self.combobox.bind("<<ComboboxSelected>>", self.chooser_handler)
         
-    def bind_keyframe(self, event, *args):
+    def write_text(self, text:str, color:str="black"):
         self.number_view.configure(fg="black")
         self.number_view.configure(state="normal")
+        self.number_view.delete(0, tk.END)
+        self.number_view.insert(0, text)
+        self.number_view.configure(fg=color)
+        self.number_view.configure(state="readonly")
+    
+    def bind_keyframe(self, event, *args):
+        if event.widget["text"] == "DEL":
+            self.expression.delete() 
+            self.write_text(self.expression.display())
+            return
         if self.expression.add(event.widget["text"]):
             try: 
-                self.number_view.delete(0, tk.END)
-                self.number_view.insert(0, Evaluator().evaluate(self.expression).display())
+                self.write_text(Evaluator().evaluate(self.expression).display())
+                self.history.add_history(copy.deepcopy(self.expression))
+                print(self.history.history)
+                print(list(map(lambda x: x.display(), self.history.history)))
             except:
-                self.number_view.delete(0, tk.END)
-                self.number_view.insert(0, self.expression.display())
-                self.number_view.configure(fg="red")
+                self.write_text(self.expression.display(), 'red')
             self.expression.clear()
         else:
-            self.number_view.delete(0, tk.END)
-            self.number_view.insert(0, self.expression.display())
-        self.number_view.configure(state="readonly")
+            self.write_text(self.expression.display())
+        
+    def chooser_handler(self, *args):
+        _input = self.combobox.get()
+        self.expression.add(_input)
+        self.number_view.delete(0, tk.END)
+        self.write_text(self.expression.display())
     
     def run(self):
         self.init_components()

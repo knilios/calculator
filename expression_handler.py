@@ -1,8 +1,9 @@
-operator = list("+-*/^=")
-special_operators = ["log", "sqrt"]
+from operants import Operants
+
 class ExpressionHandler:
     def __init__(self) -> None:
         self.expression = ["0"]
+        self.operants = Operants()
         
     def add(self, char:str) -> bool:
         if char == " " or char == "":
@@ -10,7 +11,7 @@ class ExpressionHandler:
         if char == "=":
             return True
         if self.expression == ["0"]:
-            if char in special_operators: 
+            if char in self.operants.special: 
                 self.expression += [char]
             else:
                 self.expression = [char]
@@ -24,8 +25,8 @@ class ExpressionHandler:
     def display(self) -> str:
         _new_string = ""
         for i in range(len(self.expression)):
-            if self.expression[i] in special_operators:
-                if self.expression[i-1] in operator:
+            if self.expression[i] in self.operants.special:
+                if self.expression[i-1] in self.operants.operational:
                     _new_string += self.expression[i] + "("
                 else:
                     _new_string = self.expression[i] + "(" + _new_string + ")"
@@ -40,6 +41,9 @@ class ExpressionHandler:
         if self.expression == []:
             self.expression = ["0"]
         return
+    
+    def __str__(self):
+        return self.display()
         
         
 if __name__ == "__main__":
