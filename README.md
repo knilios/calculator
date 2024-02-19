@@ -40,3 +40,4 @@ This code should bind *all* the keys to the same event handler.
 
 # UML diagram
 
+![UML Class diagram](./uml_diagram.jpg)
