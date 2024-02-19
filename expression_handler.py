@@ -1,27 +1,28 @@
 from operants import Operants
 
+
 class ExpressionHandler:
     def __init__(self) -> None:
         self.expression = ["0"]
         self.operants = Operants()
-        
-    def add(self, char:str) -> bool:
+
+    def add(self, char: str) -> bool:
         if char == " " or char == "":
             self.expression = ["0"]
         if char == "=":
             return True
         if self.expression == ["0"]:
-            if char in self.operants.special: 
+            if char in self.operants.special:
                 self.expression += [char]
             else:
                 self.expression = [char]
         else:
             self.expression += [char]
         return False
-    
+
     def clear(self) -> None:
         self.expression = ["0"]
-    
+
     def display(self) -> str:
         _new_string = ""
         for i in range(len(self.expression)):
@@ -33,7 +34,7 @@ class ExpressionHandler:
             else:
                 _new_string += self.expression[i]
         return _new_string
-    
+
     def delete(self):
         if self.expression == ["0"]:
             return
@@ -41,11 +42,11 @@ class ExpressionHandler:
         if self.expression == []:
             self.expression = ["0"]
         return
-    
+
     def __str__(self):
         return self.display()
-        
-        
+
+
 if __name__ == "__main__":
     a = ExpressionHandler()
     a.add("1")
@@ -76,5 +77,3 @@ if __name__ == "__main__":
     print(a.display())
     a.delete()
     print(a.display())
-    
-    

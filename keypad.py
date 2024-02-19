@@ -2,12 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 
 
-#TODO Keypad should extend Frame so that it is a container
+# TODO Keypad should extend Frame so that it is a container
 class Keypad():
 
     def __init__(self, parent, keynames=[], columns=1, **kwargs):
-        #TODO call the superclass constructor with all args except
-		# keynames and columns
+        # TODO call the superclass constructor with all args except
+	# keynames and columns
         self.parent = parent
         self.keynames = keynames
         self.init_components(columns)
@@ -30,7 +30,8 @@ class Keypad():
         # customize buttons
         for i in range(0, dimention[0] * dimention[1], dimention[0]):
             for j in range(0, dimention[0]):
-                self.button[i+j].grid(row=int(i/dimention[0]), column=j, sticky="nsew")
+                self.button[i+j].grid(row=int(i/dimention[0]),
+                                      column=j, sticky="nsew")
         # weighing
         for i in range(dimention[1]):
             keypad_frame.rowconfigure(i, weight=1)
@@ -41,13 +42,13 @@ class Keypad():
 
     def bind(self, todo):
         """Bind an event handler to an event sequence."""
-        #TODO Write a bind method with exactly the same parameters
+        # TODO Write a bind method with exactly the same parameters
         # as the bind method of Tkinter widgets.
         # Use the parameters to bind all the self.buttons in the keypad
         # to the same event handler.
         for i in self.button:
             i.bind("<Button>", todo)
-    
+
     def __setitem__(self, key, value) -> None:
         """Overrides __setitem__ to allow configuration of all buttons
         using dictionary syntax.
@@ -65,7 +66,7 @@ class Keypad():
         foreground color is 'red'.
         """
         return self.button[0][key]
-    
+
     def __getattr__(self, name):
         """if you excecute some method that does not exist in the class
         it will execute that method in self.frame instead
@@ -78,7 +79,6 @@ class Keypad():
         """
         setattr(self, name, self)
         return getattr(self.frame, name)
-            
 
     def configure(self, cnf=None, **kwargs):
         """Apply configuration settings to all buttons.
@@ -89,10 +89,6 @@ class Keypad():
         for i in self.button:
             i.configure(kwargs)
 
-    #TODO Write a property named 'frame' the returns a reference to 
-    # the the superclass object for this keypad.
-    # This is so that a programmer can set properties of a keypad's frame,
-    # e.g. keypad.frame.configure(background='blue')
 
 if __name__ == '__main__':
     keys = list('789456123 0.')  # = ['7','8','9',...]

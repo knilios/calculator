@@ -2,12 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 
 
-#TODO Keypad should extend Frame so that it is a container
+# TODO Keypad should extend Frame so that it is a container
 class Commandpad():
 
     def __init__(self, parent, keynames=[], **kwargs):
-        #TODO call the superclass constructor with all args except
-		# keynames and columns
+        # TODO call the superclass constructor with all args except
+	# keynames and columns
         self.parent = parent
         self.keynames = keynames
         self.init_components()
@@ -26,7 +26,8 @@ class Commandpad():
         operation_frame.pack(expand=True, fill=tk.BOTH, side="right")
         # Init buttons
         for i in range(len(_operants)):
-            self.button.append(tk.Button(operation_frame, text=str(_operants[i])))
+            self.button.append(
+                tk.Button(operation_frame, text=str(_operants[i])))
             self.button[i].grid(row=i, column=0, sticky="nsew")
             operation_frame.rowconfigure(i, weight=1)
         operation_frame.columnconfigure(0, weight=6)
@@ -34,13 +35,9 @@ class Commandpad():
 
     def bind(self, todo):
         """Bind an event handler to an event sequence."""
-        #TODO Write a bind method with exactly the same parameters
-        # as the bind method of Tkinter widgets.
-        # Use the parameters to bind all the self.buttons in the keypad
-        # to the same event handler.
         for i in self.button:
-            i.bind("<Button>", todo )
-    
+            i.bind("<Button>", todo)
+
     def __setitem__(self, key, value) -> None:
         """Overrides __setitem__ to allow configuration of all buttons
         using dictionary syntax.
@@ -58,7 +55,6 @@ class Commandpad():
         foreground color is 'red'.
         """
         return self.button[0][key]
-            
 
     def configure(self, cnf=None, **kwargs):
         """Apply configuration settings to all buttons.
@@ -68,7 +64,7 @@ class Commandpad():
         """
         for i in self.button:
             i.configure(kwargs)
-            
+
     def __getattr__(self, name):
         """if you excecute some method that does not exist in the class
         it will execute that method in self.frame instead
@@ -82,14 +78,9 @@ class Commandpad():
         setattr(self, name, self)
         return getattr(self.frame, name)
 
-    #TODO Write a property named 'frame' the returns a reference to 
-    # the the superclass object for this keypad.
-    # This is so that a programmer can set properties of a keypad's frame,
-    # e.g. keypad.frame.configure(background='blue')
 
 if __name__ == '__main__':
-    keys = list('+_*/=') 
-
+    keys = list('+_*/=')
     root = tk.Tk()
     root.title("Commandpad Demo")
     commandpad = Commandpad(root, keynames=keys, columns=3)
