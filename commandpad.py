@@ -5,7 +5,7 @@ from tkinter import ttk
 # TODO Keypad should extend Frame so that it is a container
 class Commandpad():
 
-    def __init__(self, parent, keynames=[], **kwargs):
+    def __init__(self, parent, keynames:list=[], **kwargs):
         # TODO call the superclass constructor with all args except
 	# keynames and columns
         self.parent = parent

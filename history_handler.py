@@ -12,10 +12,10 @@ class History:
     def history(self):
         return self.__history
 
-    def __str__(self) -> str:
+    def __str__(self) -> list:
         return self.__history
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> list:
         return self.__history
 
 

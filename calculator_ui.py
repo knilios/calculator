@@ -71,7 +71,7 @@ class Calculator_UI(tk.Tk):
             button.pack(expand=True, side="top", fill="x")
         return canvas, frame
 
-    def choose_history(self, arg, windows):
+    def choose_history(self, arg: ExpressionHandler, windows:tk.Toplevel):
         self.expression = arg
         self.write_text(self.expression)
         windows.destroy()
